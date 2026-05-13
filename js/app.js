@@ -130,7 +130,7 @@
         var c = p.colors[ci];
         var cStock = hasAnyStock(p.id, c.value);
         var selected = c.value === colorVal ? ' selected' : '';
-        colorHtml += '<button class="color-btn' + selected + '" data-value="' + c.value + '" data-name="' + c.name + '" style="background:' + c.value + ';border-color:' + c.value + '" onclick="window._cloth.selectColor(' + p.id + ',\'' + escapeQuote(c.value) + '\',\'' + escapeQuote(c.name) + '\')"></button>';
+        colorHtml += '<button class="color-btn' + selected + disabled + '" data-value="' + c.value + '" data-name="' + c.name + '" style="background:' + c.value + '" onclick="window._cloth.selectColor(' + p.id + ',\'' + escapeQuote(c.value) + '\',\'' + escapeQuote(c.name) + '\')"></button>';
       }
 
       var catBg = p.category === '男装' ? '#E3F2FD' : p.category === '女装' ? '#FCE4EC' : '#FFF8E1';
