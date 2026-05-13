@@ -1,6 +1,10 @@
 (function() {
   'use strict';
 
+  // ===== 常量 =====
+  var LS_USERS = 'clothing_users';
+  var LS_SESSION = 'clothing_session';
+
   // ===== 状态 =====
   var stockData     = {};
   var cartData      = [];
@@ -9,15 +13,219 @@
   var selSizes      = {};   // pid -> size string
   var selColors     = {};   // pid -> color value string
   var lastOrderSnap = [];
+  var currentUser   = null;
 
   // ===== 初始化 =====
   function init() {
     loadStock();
     loadCart();
+    loadUserSession();
     syncSelections();
     renderProducts();
     updateBadge();
     updateBottomBar();
+  }
+
+  // ===== 用户系统 =====
+  function loadUserSession() {
+    var session = localStorage.getItem(LS_SESSION);
+    if (session) {
+      var user = JSON.parse(session);
+      currentUser = user;
+      updateUserUI();
+    }
+  }
+
+  function getUsers() {
+    var saved = localStorage.getItem(LS_USERS);
+    return saved ? JSON.parse(saved) : [];
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem(LS_USERS, JSON.stringify(users));
+  }
+
+  function showLoginModal() {
+    document.getElementById('loginOverlay').classList.add('show');
+    document.getElementById('loginModal').classList.add('show');
+    document.getElementById('loginForm').reset();
+    clearLoginErrors();
+  }
+
+  function closeLoginModal() {
+    document.getElementById('loginOverlay').classList.remove('show');
+    document.getElementById('loginModal').classList.remove('show');
+  }
+
+  function showRegisterModal() {
+    document.getElementById('registerOverlay').classList.add('show');
+    document.getElementById('registerModal').classList.add('show');
+    document.getElementById('registerForm').reset();
+    clearRegisterErrors();
+  }
+
+  function closeRegisterModal() {
+    document.getElementById('registerOverlay').classList.remove('show');
+    document.getElementById('registerModal').classList.remove('show');
+  }
+
+  function switchToRegister() {
+    closeLoginModal();
+    showRegisterModal();
+    return false;
+  }
+
+  function switchToLogin() {
+    closeRegisterModal();
+    showLoginModal();
+    return false;
+  }
+
+  function validateRegisterForm() {
+    var valid = true;
+    clearRegisterErrors();
+
+    var username = document.getElementById('regUsername').value.trim();
+    var password = document.getElementById('regPassword').value.trim();
+    var confirmPassword = document.getElementById('regConfirmPassword').value.trim();
+    var phone = document.getElementById('regPhone').value.trim();
+
+    if (!username) { showRegisterErr('regUsername', 'errRegUsername', '请输入用户名'); valid = false; }
+    else if (username.length < 3) { showRegisterErr('regUsername', 'errRegUsername', '用户名至少3个字符'); valid = false; }
+
+    if (!password) { showRegisterErr('regPassword', 'errRegPassword', '请输入密码'); valid = false; }
+    else if (password.length < 6) { showRegisterErr('regPassword', 'errRegPassword', '密码至少6个字符'); valid = false; }
+
+    if (!confirmPassword) { showRegisterErr('regConfirmPassword', 'errRegConfirmPassword', '请确认密码'); valid = false; }
+    else if (password !== confirmPassword) { showRegisterErr('regConfirmPassword', 'errRegConfirmPassword', '两次密码不一致'); valid = false; }
+
+    if (!phone) { showRegisterErr('regPhone', 'errRegPhone', '请输入手机号'); valid = false; }
+    else if (!/^1[3-9]\d{9}$/.test(phone)) { showRegisterErr('regPhone', 'errRegPhone', '手机号格式不正确'); valid = false; }
+
+    return valid;
+  }
+
+  function register(e) {
+    e.preventDefault();
+    if (!validateRegisterForm()) return;
+
+    var username = document.getElementById('regUsername').value.trim();
+    var password = document.getElementById('regPassword').value.trim();
+    var phone = document.getElementById('regPhone').value.trim();
+
+    var users = getUsers();
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].username === username) {
+        showRegisterErr('regUsername', 'errRegUsername', '用户名已存在');
+        return;
+      }
+      if (users[i].phone === phone) {
+        showRegisterErr('regPhone', 'errRegPhone', '该手机号已被注册');
+        return;
+      }
+    }
+
+    users.push({ username: username, password: password, phone: phone });
+    saveUsers(users);
+
+    currentUser = { username: username, phone: phone };
+    localStorage.setItem(LS_SESSION, JSON.stringify(currentUser));
+
+    closeRegisterModal();
+    updateUserUI();
+    showToast('注册成功，欢迎 ' + username + '！');
+  }
+
+  function validateLoginForm() {
+    var valid = true;
+    clearLoginErrors();
+
+    var username = document.getElementById('loginUsername').value.trim();
+    var password = document.getElementById('loginPassword').value.trim();
+
+    if (!username) { showLoginErr('loginUsername', 'errLoginUsername', '请输入用户名'); valid = false; }
+    if (!password) { showLoginErr('loginPassword', 'errLoginPassword', '请输入密码'); valid = false; }
+
+    return valid;
+  }
+
+  function login(e) {
+    e.preventDefault();
+    if (!validateLoginForm()) return;
+
+    var username = document.getElementById('loginUsername').value.trim();
+    var password = document.getElementById('loginPassword').value.trim();
+
+    var users = getUsers();
+    var foundUser = null;
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].username === username && users[i].password === password) {
+        foundUser = users[i];
+        break;
+      }
+    }
+
+    if (!foundUser) {
+      showLoginErr('loginPassword', 'errLoginPassword', '用户名或密码错误');
+      return;
+    }
+
+    currentUser = { username: foundUser.username, phone: foundUser.phone };
+    localStorage.setItem(LS_SESSION, JSON.stringify(currentUser));
+
+    closeLoginModal();
+    updateUserUI();
+    showToast('登录成功，欢迎 ' + foundUser.username + '！');
+  }
+
+  function logout() {
+    currentUser = null;
+    localStorage.removeItem(LS_SESSION);
+    updateUserUI();
+    showToast('已退出登录');
+  }
+
+  function updateUserUI() {
+    var userSection = document.getElementById('userSection');
+    var userInfo = document.getElementById('userInfo');
+    var userName = document.getElementById('userName');
+
+    if (currentUser) {
+      userSection.style.display = 'none';
+      userInfo.style.display = 'flex';
+      userName.textContent = currentUser.username;
+    } else {
+      userSection.style.display = 'flex';
+      userInfo.style.display = 'none';
+    }
+  }
+
+  function showLoginErr(inpId, errId, msg) {
+    document.getElementById(inpId).classList.add('error');
+    document.getElementById(errId).textContent = msg;
+  }
+
+  function clearLoginErrors() {
+    document.getElementById('loginUsername').classList.remove('error');
+    document.getElementById('loginPassword').classList.remove('error');
+    document.getElementById('errLoginUsername').textContent = '';
+    document.getElementById('errLoginPassword').textContent = '';
+  }
+
+  function showRegisterErr(inpId, errId, msg) {
+    document.getElementById(inpId).classList.add('error');
+    document.getElementById(errId).textContent = msg;
+  }
+
+  function clearRegisterErrors() {
+    document.getElementById('regUsername').classList.remove('error');
+    document.getElementById('regPassword').classList.remove('error');
+    document.getElementById('regConfirmPassword').classList.remove('error');
+    document.getElementById('regPhone').classList.remove('error');
+    document.getElementById('errRegUsername').textContent = '';
+    document.getElementById('errRegPassword').textContent = '';
+    document.getElementById('errRegConfirmPassword').textContent = '';
+    document.getElementById('errRegPhone').textContent = '';
   }
 
   // ===== 库存 =====
@@ -485,7 +693,16 @@
     openCheckout: openCheckout,
     closeCheckout: closeCheckout,
     submitOrder: submitOrder,
-    closeSuccess: closeSuccess
+    closeSuccess: closeSuccess,
+    showLoginModal: showLoginModal,
+    closeLoginModal: closeLoginModal,
+    showRegisterModal: showRegisterModal,
+    closeRegisterModal: closeRegisterModal,
+    switchToRegister: switchToRegister,
+    switchToLogin: switchToLogin,
+    login: login,
+    register: register,
+    logout: logout
   };
 
   init();

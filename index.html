@@ -12,12 +12,82 @@
   <header class="site-header">
     <div class="container header-inner">
       <h1 class="logo">CLOTHING <span>STORE</span></h1>
-      <button class="cart-btn" onclick="window._cloth.toggleDrawer()">
-        🛒
-        <span class="cart-badge" id="cartBadge">0</span>
-      </button>
+      <div class="header-actions">
+        <div class="user-section" id="userSection">
+          <button class="btn-login" id="btnLogin" onclick="window._cloth.showLoginModal()">登录</button>
+          <button class="btn-register" id="btnRegister" onclick="window._cloth.showRegisterModal()">注册</button>
+        </div>
+        <div class="user-info" id="userInfo" style="display:none;">
+          <span class="user-name" id="userName"></span>
+          <button class="btn-logout" onclick="window._cloth.logout()">退出</button>
+        </div>
+        <button class="cart-btn" onclick="window._cloth.toggleDrawer()">
+          🛒
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+      </div>
     </div>
   </header>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginOverlay" onclick="window._cloth.closeLoginModal()"></div>
+  <div class="modal auth-modal" id="loginModal">
+    <div class="modal-header">
+      <h3>🔐 用户登录</h3>
+      <button class="modal-close" onclick="window._cloth.closeLoginModal()">✕</button>
+    </div>
+    <form class="auth-form" id="loginForm" onsubmit="window._cloth.login(event)">
+      <div class="form-group">
+        <label for="loginUsername">用户名 <span class="required">*</span></label>
+        <input type="text" id="loginUsername" placeholder="请输入用户名" maxlength="20">
+        <span class="error-msg" id="errLoginUsername"></span>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">密码 <span class="required">*</span></label>
+        <input type="password" id="loginPassword" placeholder="请输入密码" maxlength="20">
+        <span class="error-msg" id="errLoginPassword"></span>
+      </div>
+      <button type="submit" class="btn-submit">登录</button>
+      <div class="auth-switch">
+        还没有账号？<a href="#" onclick="window._cloth.switchToRegister()">立即注册</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="modal-overlay" id="registerOverlay" onclick="window._cloth.closeRegisterModal()"></div>
+  <div class="modal auth-modal" id="registerModal">
+    <div class="modal-header">
+      <h3>📝 用户注册</h3>
+      <button class="modal-close" onclick="window._cloth.closeRegisterModal()">✕</button>
+    </div>
+    <form class="auth-form" id="registerForm" onsubmit="window._cloth.register(event)">
+      <div class="form-group">
+        <label for="regUsername">用户名 <span class="required">*</span></label>
+        <input type="text" id="regUsername" placeholder="请输入用户名（3-20个字符）" maxlength="20">
+        <span class="error-msg" id="errRegUsername"></span>
+      </div>
+      <div class="form-group">
+        <label for="regPassword">密码 <span class="required">*</span></label>
+        <input type="password" id="regPassword" placeholder="请输入密码（6-20个字符）" maxlength="20">
+        <span class="error-msg" id="errRegPassword"></span>
+      </div>
+      <div class="form-group">
+        <label for="regConfirmPassword">确认密码 <span class="required">*</span></label>
+        <input type="password" id="regConfirmPassword" placeholder="请再次输入密码" maxlength="20">
+        <span class="error-msg" id="errRegConfirmPassword"></span>
+      </div>
+      <div class="form-group">
+        <label for="regPhone">手机号 <span class="required">*</span></label>
+        <input type="tel" id="regPhone" placeholder="请输入11位手机号" maxlength="11">
+        <span class="error-msg" id="errRegPhone"></span>
+      </div>
+      <button type="submit" class="btn-submit">注册</button>
+      <div class="auth-switch">
+        已有账号？<a href="#" onclick="window._cloth.switchToLogin()">立即登录</a>
+      </div>
+    </form>
+  </div>
 
   <!-- Filter Bar -->
   <div class="filter-bar">

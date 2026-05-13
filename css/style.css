@@ -39,6 +39,38 @@ body {
 .logo { font-size: 1.1rem; font-weight: 300; letter-spacing: 3px; color: var(--white); }
 .logo span { color: var(--gold); font-weight: 700; letter-spacing: 4px; }
 
+.header-actions {
+  display: flex; align-items: center; gap: 12px;
+}
+.user-section {
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-login, .btn-register {
+  padding: 6px 14px; border-radius: 16px; font-size: 0.8rem;
+  cursor: pointer; transition: 0.2s;
+}
+.btn-login {
+  background: transparent; border: 1px solid rgba(201,169,110,0.5);
+  color: var(--gold);
+}
+.btn-login:hover { background: var(--gold); color: var(--black); }
+.btn-register {
+  background: var(--gold); border: none; color: var(--black); font-weight: 600;
+}
+.btn-register:hover { background: var(--gold-dark); }
+.user-info {
+  display: flex; align-items: center; gap: 10px;
+}
+.user-name {
+  color: var(--gold); font-size: 0.85rem; font-weight: 600;
+}
+.btn-logout {
+  background: rgba(255,255,255,0.1); border: none; color: rgba(255,255,255,0.6);
+  padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; cursor: pointer;
+  transition: 0.2s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.2); color: var(--white); }
+
 .cart-btn {
   position: relative; background: rgba(255,255,255,0.08);
   border: 1px solid rgba(201,169,110,0.4); color: var(--white);
@@ -286,6 +318,27 @@ body {
 }
 .checkout-form input.error,
 .checkout-form textarea.error { border-color: var(--danger); }
+
+/* ===== Auth Modal ===== */
+.auth-modal { width: 420px; }
+.auth-form .form-group { margin-bottom: 14px; }
+.auth-form label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+
+.auth-form input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 4px; font-size: 0.93rem; font-family: inherit;
+  transition: border-color 0.2s; background: var(--bg);
+}
+.auth-form input:focus {
+  outline: none; border-color: var(--gold); background: var(--white);
+}
+.auth-form input.error { border-color: var(--danger); }
+
+.auth-switch {
+  text-align: center; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted);
+}
+.auth-switch a { color: var(--gold); text-decoration: none; font-weight: 600; }
+.auth-switch a:hover { text-decoration: underline; }
 
 .error-msg { display: block; color: var(--danger); font-size: 0.72rem; margin-top: 3px; min-height: 13px; }
 
