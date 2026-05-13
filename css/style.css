@@ -121,11 +121,12 @@ body {
 .color-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 5px; display: block; }
 .color-btns { display: flex; gap: 6px; flex-wrap: wrap; }
 .color-btn {
-  width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border);
-  cursor: pointer; transition: 0.2s; position: relative;
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border);
+  cursor: pointer; transition: 0.2s; position: relative; flex-shrink: 0;
 }
-.color-btn:hover { border-color: var(--text); }
+.color-btn:hover:not(.disabled) { border-color: var(--text); }
 .color-btn.selected { border-color: var(--black); border-width: 2px; }
+.color-btn.disabled { opacity: 0.3; cursor: not-allowed; }
 .color-btn.selected::after {
   content: '✓'; position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
@@ -134,7 +135,8 @@ body {
 .color-btn[data-value="#FFFFFF"].selected::after,
 .color-btn[data-value="#F5F5DC"].selected::after,
 .color-btn[data-value="#FFB6C1"].selected::after,
-.color-btn[data-value="#FFD700"].selected::after { color: var(--black); }
+.color-btn[data-value="#FFD700"].selected::after,
+.color-btn[data-value="#FFB6C1"].selected::after { color: var(--black); text-shadow: none; }
 
 /* Stock Info */
 .card-stock { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; }
@@ -176,13 +178,13 @@ body {
 /* ===== Cart Drawer ===== */
 .drawer-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-  z-index: 150; display: none;
+  z-index: 90; display: none;
 }
 .drawer-overlay.show { display: block; }
 
 .cart-drawer {
   position: fixed; top: 0; right: -380px; width: 380px; max-width: 90vw;
-  height: 100vh; background: var(--white); z-index: 151;
+  height: 100vh; background: var(--white); z-index: 95;
   display: flex; flex-direction: column; transition: right 0.3s ease;
   box-shadow: -4px 0 30px rgba(0,0,0,0.15);
 }
