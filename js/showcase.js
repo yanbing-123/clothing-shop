@@ -53,6 +53,7 @@
   function switchView(view) {
     var shopSection = document.getElementById('productGrid');
     var showcaseSection = document.getElementById('showcaseSection');
+    var ordersSection = document.getElementById('ordersSection');
     var filterBar = document.querySelector('.filter-bar');
 
     var navLinks = document.querySelectorAll('.nav-link');
@@ -60,15 +61,23 @@
       navLinks[i].classList.toggle('active', navLinks[i].dataset.view === view);
     }
 
+    // Hide all sections
+    shopSection.style.display = 'none';
+    if (filterBar) filterBar.style.display = 'none';
+    if (showcaseSection) showcaseSection.style.display = 'none';
+    if (ordersSection) ordersSection.style.display = 'none';
+
     if (view === 'shop') {
       shopSection.style.display = '';
       if (filterBar) filterBar.style.display = '';
-      showcaseSection.style.display = 'none';
-    } else {
-      shopSection.style.display = 'none';
-      if (filterBar) filterBar.style.display = 'none';
+    } else if (view === 'showcase') {
       showcaseSection.style.display = 'block';
       renderShowcase();
+    } else if (view === 'orders') {
+      ordersSection.style.display = 'block';
+      if (window._cloth && window._cloth.renderOrders) {
+        window._cloth.renderOrders();
+      }
     }
   }
 

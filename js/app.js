@@ -448,6 +448,9 @@
   function closeSuccess() {
     document.getElementById('successOverlay').classList.remove('show');
     document.getElementById('successModal').classList.remove('show');
+    // Close cart drawer if open
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.getElementById('drawerOverlay').classList.remove('show');
     lastOrderSnap = [];
   }
 
