@@ -12,10 +12,17 @@
   <header class="site-header">
     <div class="container header-inner">
       <h1 class="logo">CLOTHING <span>STORE</span></h1>
-      <button class="cart-btn" onclick="window._cloth.toggleDrawer()">
-        🛒
-        <span class="cart-badge" id="cartBadge">0</span>
-      </button>
+      <nav class="site-nav">
+        <a href="#" class="nav-link active" data-view="shop" onclick="window._cloth.switchView('shop')">商品</a>
+        <a href="#" class="nav-link" data-view="showcase" onclick="window._cloth.switchView('showcase')">买家秀</a>
+      </nav>
+      <div class="header-actions">
+        <span class="points-badge" id="pointsBadge">⭐ <strong id="pointsCount">0</strong> 积分</span>
+        <button class="cart-btn" onclick="window._cloth.toggleDrawer()">
+          🛒
+          <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -106,7 +113,56 @@
     <button class="btn-submit" onclick="window._cloth.closeSuccess()">继续购物</button>
   </div>
 
+  <!-- Showcase Section -->
+  <section class="showcase-section" id="showcaseSection" style="display:none;">
+    <div class="container">
+      <div class="showcase-header">
+        <h2>👗 真实买家秀</h2>
+        <div class="showcase-header-right">
+          <span class="showcase-points">⭐ <strong id="showcasePoints">0</strong> 积分</span>
+          <button class="btn-upload" onclick="window._cloth.openUpload()">+ 上传穿搭</button>
+        </div>
+      </div>
+      <div class="showcase-grid" id="showcaseGrid"></div>
+      <div class="showcase-empty" id="showcaseEmpty">
+        <div class="showcase-empty-icon">📸</div>
+        <p>还没有买家秀，快来上传你的穿搭吧！</p>
+        <button class="btn-upload" onclick="window._cloth.openUpload()">+ 上传第一张穿搭</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upload Modal -->
+  <div class="modal-overlay" id="uploadOverlay" onclick="window._cloth.closeUpload()"></div>
+  <div class="modal upload-modal" id="uploadModal">
+    <div class="modal-header">
+      <h3>📸 上传穿搭照</h3>
+      <button class="modal-close" onclick="window._cloth.closeUpload()">✕</button>
+    </div>
+    <form class="upload-form" id="uploadForm" onsubmit="window._cloth.submitUpload(event)">
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-placeholder" id="uploadPlaceholder">
+          <span class="upload-icon">📷</span>
+          <p>点击选择照片</p>
+          <span class="upload-hint">支持 JPG / PNG，文件不超过 2MB</span>
+        </div>
+        <img id="uploadPreview" class="upload-preview" style="display:none;" alt="预览">
+        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+      </div>
+      <div class="form-group">
+        <label for="uploadDesc">穿搭描述 <span class="required">*</span></label>
+        <textarea id="uploadDesc" placeholder="描述你的穿搭，如：这套搭配来自本店新款，非常适合通勤~" rows="3" maxlength="200"></textarea>
+        <span class="error-msg" id="errUpload"></span>
+      </div>
+      <div class="upload-reward">
+        <span>上传成功可获得 ⭐ <strong>10</strong> 积分奖励</span>
+      </div>
+      <button type="submit" class="btn-submit" id="btnSubmitUpload" disabled>提交</button>
+    </form>
+  </div>
+
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/showcase.js"></script>
 </body>
 </html>
