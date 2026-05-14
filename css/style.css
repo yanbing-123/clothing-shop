@@ -313,11 +313,147 @@ body {
 .success-note { color: var(--text-muted); font-size: 0.82rem; margin-bottom: 22px; }
 
 /* ===== Responsive ===== */
+/* ===== Site Nav (in Header) ===== */
+.site-nav {
+  display: flex; gap: 4px; align-items: center;
+}
+.nav-link {
+  padding: 6px 14px; border-radius: 16px; font-size: 0.82rem;
+  color: rgba(255,255,255,0.55); text-decoration: none;
+  transition: 0.2s; letter-spacing: 1px;
+}
+.nav-link:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+.nav-link.active { color: var(--gold); background: rgba(201,169,110,0.12); }
+
+/* ===== Header Actions ===== */
+.header-actions {
+  display: flex; align-items: center; gap: 12px;
+}
+
+/* ===== Points Badge ===== */
+.points-badge {
+  font-size: 0.78rem; color: var(--gold); background: rgba(201,169,110,0.1);
+  padding: 5px 12px; border-radius: 16px; border: 1px solid rgba(201,169,110,0.25);
+  white-space: nowrap;
+}
+.points-badge strong { font-size: 0.85rem; font-weight: 700; }
+
+/* ===== Showcase Section ===== */
+.showcase-section {
+  padding: 24px 0;
+}
+
+.showcase-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+}
+.showcase-header h2 {
+  font-size: 1.15rem; font-weight: 700; color: var(--black);
+}
+.showcase-header-right {
+  display: flex; align-items: center; gap: 14px;
+}
+.showcase-points {
+  font-size: 0.85rem; color: var(--text-muted); background: var(--bg);
+  padding: 6px 14px; border-radius: 16px; white-space: nowrap;
+}
+.showcase-points strong { color: var(--gold-dark); font-weight: 700; }
+
+.btn-upload {
+  padding: 8px 20px; background: var(--black); color: var(--white);
+  border: none; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; transition: 0.2s; letter-spacing: 0.5px;
+}
+.btn-upload:hover { background: var(--gold); color: var(--black); }
+
+/* ===== Showcase Grid ===== */
+.showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.showcase-card {
+  background: var(--card-bg); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.showcase-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+
+.showcase-img-wrap {
+  width: 100%; height: 260px; overflow: hidden;
+  background: var(--bg); position: relative;
+}
+.showcase-img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block; transition: transform 0.3s;
+}
+.showcase-card:hover .showcase-img { transform: scale(1.03); }
+
+.showcase-card-body { padding: 14px; }
+
+.showcase-desc {
+  font-size: 0.85rem; color: var(--text); line-height: 1.6;
+  margin-bottom: 10px; display: -webkit-box;
+  -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.showcase-meta {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.showcase-date { font-size: 0.72rem; color: var(--text-muted); }
+.showcase-delete {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.9rem; cursor: pointer; padding: 4px; line-height: 1;
+  border-radius: 4px; transition: 0.15s;
+}
+.showcase-delete:hover { color: var(--danger); background: rgba(192,57,43,0.08); }
+
+/* ===== Showcase Empty State ===== */
+.showcase-empty {
+  text-align: center; padding: 60px 20px; display: none;
+}
+.showcase-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.showcase-empty p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 18px; }
+
+/* ===== Upload Modal ===== */
+.upload-modal { width: 500px; }
+
+.upload-area {
+  border: 2px dashed var(--border); border-radius: var(--radius);
+  padding: 30px 20px; text-align: center; cursor: pointer;
+  transition: 0.2s; margin-bottom: 16px; background: var(--bg);
+  min-height: 180px; display: flex; align-items: center; justify-content: center;
+}
+.upload-area:hover { border-color: var(--gold); background: rgba(201,169,110,0.04); }
+
+.upload-icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+.upload-placeholder p { font-size: 0.9rem; color: var(--text); margin-bottom: 6px; }
+.upload-hint { font-size: 0.75rem; color: var(--text-muted); }
+
+.upload-preview {
+  max-width: 100%; max-height: 300px; border-radius: 4px;
+  object-fit: contain;
+}
+
+.upload-reward {
+  background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,0.2);
+  border-radius: var(--radius); padding: 10px 14px;
+  text-align: center; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;
+}
+.upload-reward strong { color: var(--gold-dark); font-size: 0.95rem; }
+
+/* ===== Responsive for Showcase ===== */
 @media (max-width: 576px) {
   .product-grid { grid-template-columns: 1fr; gap: 14px; }
   .card-img { height: 130px; font-size: 3rem; }
   .cart-bar-inner { gap: 10px; }
   .cart-tip { display: none; }
+  .showcase-grid { grid-template-columns: 1fr; gap: 14px; }
+  .showcase-img-wrap { height: 220px; }
+  .showcase-header { flex-direction: column; align-items: flex-start; }
+  .points-badge { font-size: 0.7rem; padding: 4px 10px; }
+  .nav-link { font-size: 0.75rem; padding: 5px 10px; }
 }
 
 @media (min-width: 577px) and (max-width: 768px) {

@@ -120,5 +120,10 @@ var PRODUCTS = [
   }
 ];
 
-var LS_STOCK = 'clothing_stock';
-var LS_CART  = 'clothing_cart';
+var LS_STOCK    = 'clothing_stock';
+var LS_CART     = 'clothing_cart';
+var LS_SHOWCASE = 'clothing_showcase';
+var LS_POINTS   = 'clothing_points';
+
+var UPLOAD_POINTS = 10;
+var MAX_SHOWCASE  = 50;
