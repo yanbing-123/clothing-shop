@@ -154,8 +154,13 @@
           '</div>' +
           '<div class="card-stock' + (outOfStock ? ' zero' : '') + '">' + (outOfStock ? '缺货' : '库存 ' + stock + ' 件') + '</div>' +
           '<button class="btn-add" onclick="window._cloth.addToCart(' + p.id + ')"' + (outOfStock ? ' disabled' : '') + '>' + (outOfStock ? '缺货' : '加入购物车') + '</button>' +
+          '<button class="btn-comment" onclick="window._cloth.openComments(' + p.id + ',\'' + escapeQuote(p.name) + '\')">💬 <span class="comment-count-badge" id="commentCount' + p.id + '">0</span></button>' +
         '</div>';
       grid.appendChild(card);
+    }
+    // Update comment counts if comments module is loaded
+    if (window._cloth && window._cloth.updateCommentCounts) {
+      window._cloth.updateCommentCounts();
     }
   }
 

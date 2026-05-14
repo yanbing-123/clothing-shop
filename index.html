@@ -161,8 +161,31 @@
     </form>
   </div>
 
+  <!-- Comment Modal -->
+  <div class="modal-overlay" id="commentsOverlay" onclick="window._cloth.closeComments()"></div>
+  <div class="modal comment-modal" id="commentsModal">
+    <div class="modal-header">
+      <h3 id="commentsModalTitle">用户评论</h3>
+      <button class="modal-close" onclick="window._cloth.closeComments()">✕</button>
+    </div>
+    <div class="comments-list" id="commentsList">
+      <div class="comments-empty">还没有评论，快来发表第一条评论吧~</div>
+    </div>
+    <form class="comment-form" id="commentsForm" onsubmit="window._cloth.submitComment(event)">
+      <div class="comment-form-row">
+        <input type="text" id="commentNickname" class="comment-input" placeholder="你的昵称" maxlength="20">
+      </div>
+      <div class="comment-form-row">
+        <textarea id="commentContent" class="comment-textarea" placeholder="说说你的看法..." rows="2" maxlength="200"></textarea>
+      </div>
+      <span class="error-msg" id="errComment"></span>
+      <button type="submit" class="btn-comment-submit">发表评论</button>
+    </form>
+  </div>
+
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
   <script src="js/showcase.js"></script>
+  <script src="js/comments.js"></script>
 </body>
 </html>
