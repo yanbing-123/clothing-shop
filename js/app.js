@@ -6,6 +6,7 @@
   var cartData      = [];
   var currentCat    = '全部';
   var currentSub    = '全部';
+  var searchQuery   = '';
   var selSizes      = {};   // pid -> size string
   var selColors     = {};   // pid -> color value string
   var lastOrderSnap = [];
@@ -108,6 +109,7 @@
       var p = PRODUCTS[i];
       if (currentCat !== '全部' && p.category !== currentCat) continue;
       if (currentSub !== '全部' && p.subCategory !== currentSub) continue;
+      if (searchQuery && p.name.toLowerCase().indexOf(searchQuery) === -1 && p.category.toLowerCase().indexOf(searchQuery) === -1) continue;
 
       var size  = selSizes[p.id]  || p.sizes[0];
       var colorVal = selColors[p.id] || p.colors[0].value;
@@ -175,6 +177,12 @@
 
   function escapeQuote(str) {
     return str.replace(/'/g, "\\'");
+  }
+
+  // ===== 搜索 =====
+  function searchProducts(query) {
+    searchQuery = query.trim().toLowerCase();
+    renderProducts();
   }
 
   // ===== 筛选 =====
@@ -401,6 +409,23 @@
     saveStock();
 
     var orderNo = 'CL' + Date.now();
+
+    // Save order history
+    var savedOrders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
+    savedOrders.push({
+      orderNo: orderNo,
+      createdAt: Date.now(),
+      date: new Date().toLocaleString('zh-CN', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
+      }),
+      name: document.getElementById('fName').value.trim(),
+      items: lastOrderSnap.slice(),
+      total: cartTotal(),
+      status: '已完成'
+    });
+    localStorage.setItem(LS_ORDERS, JSON.stringify(savedOrders));
+
     cartData = [];
     saveCart();
 
@@ -479,6 +504,7 @@
 
   // ===== 暴露到 window =====
   window._cloth = {
+    searchProducts: searchProducts,
     filterBy: filterBy,
     selectSize: selectSize,
     selectColor: selectColor,
