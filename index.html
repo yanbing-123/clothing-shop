@@ -16,9 +16,13 @@
         <a href="#" class="nav-link active" data-view="shop" onclick="window._cloth.switchView('shop')">商品</a>
         <a href="#" class="nav-link" data-view="showcase" onclick="window._cloth.switchView('showcase')">买家秀</a>
         <a href="#" class="nav-link" data-view="orders" onclick="window._cloth.switchView('orders')">订单</a>
+        <a href="#" class="nav-link" data-view="wishlist" onclick="window._cloth.switchView('wishlist')">收藏</a>
       </nav>
       <div class="header-actions">
         <span class="points-badge" id="pointsBadge">⭐ <strong id="pointsCount">0</strong> 积分</span>
+        <span class="wishlist-header-btn" id="wishlistHeaderBtn" onclick="window._cloth.switchView('wishlist')">
+          ♥ <span class="wishlist-badge" id="wishlistBadge">0</span>
+        </span>
         <button class="cart-btn" onclick="window._cloth.toggleDrawer()">
           🛒
           <span class="cart-badge" id="cartBadge">0</span>
@@ -203,10 +207,26 @@
     </div>
   </section>
 
+  <!-- Wishlist Section -->
+  <section class="wishlist-section" id="wishlistSection" style="display:none;">
+    <div class="container">
+      <div class="wishlist-header">
+        <h2>♥ 我的收藏</h2>
+      </div>
+      <div class="wishlist-grid" id="wishlistGrid"></div>
+      <div class="wishlist-empty" id="wishlistEmpty">
+        <div class="wishlist-empty-icon">♥</div>
+        <p>还没有收藏商品，快去挑选喜欢的服装吧！</p>
+        <button class="btn-submit" onclick="window._cloth.switchView('shop')">去购物</button>
+      </div>
+    </div>
+  </section>
+
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
   <script src="js/showcase.js"></script>
   <script src="js/comments.js"></script>
   <script src="js/orders.js"></script>
+  <script src="js/wishlist.js"></script>
 </body>
 </html>

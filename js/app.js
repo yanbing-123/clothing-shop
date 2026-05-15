@@ -138,10 +138,16 @@
       var catBg = p.category === '男装' ? '#E3F2FD' : p.category === '女装' ? '#FCE4EC' : '#FFF8E1';
       var catColor = p.category === '男装' ? '#1565C0' : p.category === '女装' ? '#AD1457' : '#E65100';
 
+      var isFav = window._cloth && window._cloth.isInWishlist && window._cloth.isInWishlist(p.id);
+      var heartIcon = isFav ? '♥' : '♡';
+
       var card = document.createElement('div');
       card.className = 'product-card';
+      card.setAttribute('data-pid', p.id);
       card.innerHTML =
-        '<div class="card-img">' + p.emoji + '</div>' +
+        '<div class="card-img">' + p.emoji +
+          '<button class="card-wishlist-btn' + (isFav ? ' active' : '') + '" onclick="event.stopPropagation();window._cloth.toggleWishlist(' + p.id + ')" data-pid="' + p.id + '">' + heartIcon + '</button>' +
+        '</div>' +
         '<div class="card-body">' +
           '<span class="card-cat-tag ' + p.category + '" style="background:' + catBg + ';color:' + catColor + '">' + p.category + ' · ' + p.subCategory + '</span>' +
           '<div class="card-name">' + p.name + '</div>' +
@@ -163,6 +169,10 @@
     // Update comment counts if comments module is loaded
     if (window._cloth && window._cloth.updateCommentCounts) {
       window._cloth.updateCommentCounts();
+    }
+    // Update wishlist heart buttons
+    if (window._cloth && window._cloth.wishlistUpdateHearts) {
+      window._cloth.wishlistUpdateHearts();
     }
   }
 
@@ -519,7 +529,8 @@
     openCheckout: openCheckout,
     closeCheckout: closeCheckout,
     submitOrder: submitOrder,
-    closeSuccess: closeSuccess
+    closeSuccess: closeSuccess,
+    renderProducts: renderProducts
   };
 
   init();

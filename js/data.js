@@ -125,6 +125,7 @@ var LS_CART     = 'clothing_cart';
 var LS_SHOWCASE = 'clothing_showcase';
 var LS_POINTS   = 'clothing_points';
 var LS_ORDERS   = 'clothing_orders';
+var LS_WISHLIST = 'clothing_wishlist';
 
 var UPLOAD_POINTS = 10;
 var MAX_SHOWCASE  = 50;
