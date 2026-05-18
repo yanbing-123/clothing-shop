@@ -1,6 +1,7 @@
 /* ===== Reset ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ===== CSS Variables ===== */
 :root {
   --black:      #333333;
   --white:      #FFFFFF;
@@ -22,6 +23,32 @@ body {
   color: var(--text);
   line-height: 1.6;
   padding-bottom: 80px;
+}
+
+/* ===== Accessibility: Focus Visible ===== */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ===== Accessibility: Screen Reader Only ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ===== Container ===== */
@@ -334,6 +361,49 @@ body {
 }
 .nav-link:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
 .nav-link.active { color: var(--gold); background: rgba(201,169,110,0.12); }
+
+/* ===== Auth Header ===== */
+.auth-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-right: 12px;
+}
+
+.auth-btn {
+  padding: 5px 12px; border-radius: 16px; border: 1px solid rgba(201,169,110,0.3);
+  background: transparent; color: rgba(255,255,255,0.75); font-size: 0.78rem;
+  cursor: pointer; transition: 0.2s; font-family: inherit; white-space: nowrap;
+}
+.auth-btn:hover { background: rgba(201,169,110,0.12); color: var(--gold); border-color: var(--gold); }
+.auth-btn-register { background: rgba(201,169,110,0.15); color: var(--gold); border-color: var(--gold); }
+.auth-btn-register:hover { background: var(--gold); color: var(--black); }
+
+.user-greeting { font-size: 0.78rem; color: var(--gold); white-space: nowrap; }
+
+/* ===== Auth Modal ===== */
+.auth-modal { width: 400px; }
+.auth-form .form-group { margin-bottom: 14px; }
+.auth-form label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+.auth-form input,
+.auth-form textarea {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 4px; font-size: 0.93rem; font-family: inherit;
+  transition: border-color 0.2s; background: var(--bg);
+}
+.auth-form input:focus,
+.auth-form textarea:focus {
+  outline: none; border-color: var(--gold); background: var(--white);
+}
+.auth-form .btn-submit { margin-top: 6px; }
+.auth-switch { text-align: center; font-size: 0.82rem; color: var(--text-muted); margin-top: 14px; }
+.auth-switch a { color: var(--gold-dark); text-decoration: none; font-weight: 600; }
+.auth-switch a:hover { text-decoration: underline; }
+
+@media (max-width: 576px) {
+  .auth-header { margin-right: 6px; }
+  .auth-btn { font-size: 0.7rem; padding: 4px 8px; }
+  .user-greeting { font-size: 0.7rem; max-width: 60px; overflow: hidden; text-overflow: ellipsis; }
+  .auth-modal { width: 92vw; }
+}
 
 /* ===== Header Actions ===== */
 .header-actions {
@@ -757,3 +827,116 @@ body {
 @media (min-width: 992px) {
   .wishlist-grid { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ===== Star Ratings Display ===== */
+.card-rating {
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.s-star { font-size: inherit; line-height: 1; }
+.s-on { color: var(--gold); }
+.s-off { color: #CCC; }
+.rating-num {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-left: 3px;
+}
+
+/* ===== Review Button ===== */
+.btn-review {
+  width: 100%; padding: 7px 0; border: 1.5px solid var(--border);
+  border-radius: 4px; background: var(--white); color: var(--text-muted);
+  font-size: 0.78rem; cursor: pointer; transition: 0.2s;
+  margin-top: 6px; display: flex; align-items: center;
+  justify-content: center; gap: 4px;
+}
+.btn-review:hover { border-color: var(--gold); color: var(--gold-dark); background: rgba(201,169,110,0.04); }
+
+/* ===== Star Selector ===== */
+.star-selector {
+  font-size: 1.8rem;
+  cursor: pointer;
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.star-selector .star {
+  color: #DDD;
+  transition: color 0.15s;
+  user-select: none;
+}
+.star-selector .star.active,
+.star-selector .star.hover {
+  color: var(--gold);
+}
+.rating-label {
+  font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; display: block;
+}
+.rating-hint {
+  font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; display: block;
+}
+
+/* ===== Review Modal ===== */
+.review-modal { width: 520px; max-height: 85vh; display: flex; flex-direction: column; padding: 24px; }
+.review-modal.show { display: flex; }
+
+.review-list {
+  flex: 1; overflow-y: auto; margin-bottom: 16px;
+  max-height: 320px; min-height: 80px;
+}
+.review-empty {
+  text-align: center; color: var(--text-muted);
+  padding: 40px 20px; font-size: 0.88rem;
+}
+
+.review-item {
+  padding: 12px 14px; border-bottom: 1px solid var(--bg);
+}
+.review-item:last-child { border-bottom: none; }
+
+.review-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 4px;
+}
+.review-nickname { font-size: 0.82rem; font-weight: 600; color: var(--black); }
+.review-date { font-size: 0.68rem; color: var(--text-muted); }
+.review-stars { font-size: 0.9rem; color: var(--gold); margin-bottom: 4px; }
+.review-content {
+  font-size: 0.85rem; color: var(--text); line-height: 1.6;
+  word-break: break-word;
+}
+.review-actions { margin-top: 4px; }
+.review-delete {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.72rem; cursor: pointer; padding: 2px 4px; border-radius: 3px;
+  transition: 0.15s;
+}
+.review-delete:hover { color: var(--danger); background: rgba(192,57,43,0.06); }
+
+/* ===== Review Form ===== */
+.review-form {
+  border-top: 1px solid var(--border); padding-top: 14px;
+}
+.review-form-row { margin-bottom: 10px; }
+.review-input {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--border);
+  border-radius: 4px; font-size: 0.85rem; font-family: inherit;
+  transition: border-color 0.2s; background: var(--bg);
+}
+.review-input:focus { outline: none; border-color: var(--gold); background: var(--white); }
+.review-textarea {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--border);
+  border-radius: 4px; font-size: 0.85rem; font-family: inherit;
+  resize: vertical; transition: border-color 0.2s; background: var(--bg);
+}
+.review-textarea:focus { outline: none; border-color: var(--gold); background: var(--white); }
+.btn-review-submit {
+  width: 100%; padding: 10px; background: var(--black);
+  color: var(--white); border: none; border-radius: 4px;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  transition: background 0.2s; letter-spacing: 1px;
+}
+.btn-review-submit:hover { background: var(--gold); color: var(--black); }

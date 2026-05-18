@@ -23,9 +23,9 @@
 
   // ===== 库存 =====
   function loadStock() {
-    var saved = localStorage.getItem(LS_STOCK);
+    var saved = safeParse(LS_STOCK, null);
     if (saved) {
-      stockData = JSON.parse(saved);
+      stockData = saved;
     } else {
       for (var i = 0; i < PRODUCTS.length; i++) {
         stockData[PRODUCTS[i].stockKey] = {};
@@ -65,8 +65,8 @@
 
   // ===== 购物车 =====
   function loadCart() {
-    var saved = localStorage.getItem(LS_CART);
-    if (saved) cartData = JSON.parse(saved);
+    var saved = safeParse(LS_CART, []);
+    if (saved instanceof Array) cartData = saved;
   }
 
   function saveCart() { localStorage.setItem(LS_CART, JSON.stringify(cartData)); }
@@ -131,8 +131,9 @@
       for (var ci = 0; ci < p.colors.length; ci++) {
         var c = p.colors[ci];
         var cStock = hasAnyStock(p.id, c.value);
+        var colorDisabled = cStock <= 0 ? ' disabled' : '';
         var selected = c.value === colorVal ? ' selected' : '';
-        colorHtml += '<button class="color-btn' + selected + disabled + '" data-value="' + c.value + '" data-name="' + c.name + '" style="background:' + c.value + '" onclick="window._cloth.selectColor(' + p.id + ',\'' + escapeQuote(c.value) + '\',\'' + escapeQuote(c.name) + '\')"></button>';
+        colorHtml += '<button class="color-btn' + selected + colorDisabled + '" data-value="' + c.value + '" data-name="' + escapeQuote(c.name) + '" style="background:' + c.value + '" onclick="window._cloth.selectColor(' + p.id + ',\'' + escapeQuote(c.value) + '\',\'' + escapeQuote(c.name) + '\')"></button>';
       }
 
       var catBg = p.category === '男装' ? '#E3F2FD' : p.category === '女装' ? '#FCE4EC' : '#FFF8E1';
@@ -152,6 +153,7 @@
           '<span class="card-cat-tag ' + p.category + '" style="background:' + catBg + ';color:' + catColor + '">' + p.category + ' · ' + p.subCategory + '</span>' +
           '<div class="card-name">' + p.name + '</div>' +
           '<div class="card-price">¥' + p.price.toFixed(2) + '</div>' +
+          '<div class="card-rating" id="rating_' + p.id + '"></div>' +
           '<div class="size-section">' +
             '<span class="size-label">尺码：' + size + '</span>' +
             '<div class="size-btns">' + sizeHtml + '</div>' +
@@ -163,6 +165,7 @@
           '<div class="card-stock' + (outOfStock ? ' zero' : '') + '">' + (outOfStock ? '缺货' : '库存 ' + stock + ' 件') + '</div>' +
           '<button class="btn-add" onclick="window._cloth.addToCart(' + p.id + ')"' + (outOfStock ? ' disabled' : '') + '>' + (outOfStock ? '缺货' : '加入购物车') + '</button>' +
           '<button class="btn-comment" onclick="window._cloth.openComments(' + p.id + ',\'' + escapeQuote(p.name) + '\')">💬 <span class="comment-count-badge" id="commentCount' + p.id + '">0</span></button>' +
+          '<button class="btn-review" onclick="window._cloth.openReviews(' + p.id + ',\'' + escapeQuote(p.name) + '\')">⭐ 评价</button>' +
         '</div>';
       grid.appendChild(card);
     }
@@ -173,6 +176,10 @@
     // Update wishlist heart buttons
     if (window._cloth && window._cloth.wishlistUpdateHearts) {
       window._cloth.wishlistUpdateHearts();
+    }
+    // Update average ratings display
+    if (window._cloth && window._cloth.updateAverageRatings) {
+      window._cloth.updateAverageRatings();
     }
   }
 
@@ -363,8 +370,12 @@
   }
 
   function toggleDrawer() {
-    var open = document.getElementById('cartDrawer').classList.toggle('open');
-    document.getElementById('drawerOverlay').classList.toggle('show', open);
+    var drawer = document.getElementById('cartDrawer');
+    var overlay = document.getElementById('drawerOverlay');
+    var toggleBtn = document.getElementById('cartToggleBtn');
+    var open = drawer.classList.toggle('open');
+    overlay.classList.toggle('show', open);
+    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (open) updateDrawer();
   }
 
@@ -387,6 +398,7 @@
     clearErrors();
     document.getElementById('modalOverlay').classList.add('show');
     document.getElementById('checkoutModal').classList.add('show');
+    setTimeout(function() { document.getElementById('fName').focus(); }, 100);
   }
 
   function closeCheckout() {
@@ -421,7 +433,7 @@
     var orderNo = 'CL' + Date.now();
 
     // Save order history
-    var savedOrders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
+    var savedOrders = safeParse(LS_ORDERS, []);
     savedOrders.push({
       orderNo: orderNo,
       createdAt: Date.now(),
@@ -453,6 +465,7 @@
     document.getElementById('orderItems').innerHTML = html;
     document.getElementById('successOverlay').classList.add('show');
     document.getElementById('successModal').classList.add('show');
+    setTimeout(function() { document.querySelector('#successModal .btn-submit').focus(); }, 100);
   }
 
   function closeSuccess() {
@@ -490,21 +503,6 @@
   function clearErrors() {
     ['fName','fPhone','fAddress'].forEach(function(id) { document.getElementById(id).classList.remove('error'); });
     ['errName','errPhone','errAddress'].forEach(function(id) { document.getElementById(id).textContent = ''; });
-  }
-
-  // ===== Toast =====
-  function showToast(msg) {
-    var old = document.getElementById('toast');
-    if (old) old.remove();
-    var t = document.createElement('div');
-    t.id = 'toast';
-    t.textContent = msg;
-    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(51,51,51,0.92);color:#fff;padding:10px 24px;border-radius:20px;font-size:0.88rem;z-index:9999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
-    document.body.appendChild(t);
-    setTimeout(function() {
-      t.style.transition = 'opacity 0.3s'; t.style.opacity = '0';
-      setTimeout(function() { t.remove(); }, 300);
-    }, 1800);
   }
 
   // ===== 辅助 =====

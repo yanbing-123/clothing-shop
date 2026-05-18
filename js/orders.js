@@ -7,7 +7,7 @@
     var empty = document.getElementById('ordersEmpty');
     if (!container) return;
 
-    var orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
+    var orders = safeParse(LS_ORDERS, []);
 
     if (orders.length === 0) {
       container.innerHTML = '';
@@ -65,7 +65,7 @@
   // ===== Delete Single Order =====
   function deleteOrder(orderNo) {
     if (!confirm('确定要删除此订单记录吗？')) return;
-    var orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
+    var orders = safeParse(LS_ORDERS, []);
     for (var i = 0; i < orders.length; i++) {
       if (orders[i].orderNo === orderNo) {
         orders.splice(i, 1);
@@ -79,27 +79,12 @@
 
   // ===== Clear All Orders =====
   function clearOrders() {
-    var orders = JSON.parse(localStorage.getItem(LS_ORDERS) || '[]');
+    var orders = safeParse(LS_ORDERS, []);
     if (orders.length === 0) return;
     if (!confirm('确定要清空所有订单记录吗？此操作不可撤销。')) return;
     localStorage.setItem(LS_ORDERS, '[]');
     renderOrders();
     showToast('所有订单已清空');
-  }
-
-  // ===== Toast =====
-  function showToast(msg) {
-    var old = document.getElementById('toast');
-    if (old) old.remove();
-    var t = document.createElement('div');
-    t.id = 'toast';
-    t.textContent = msg;
-    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(51,51,51,0.92);color:#fff;padding:10px 24px;border-radius:20px;font-size:0.88rem;z-index:9999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
-    document.body.appendChild(t);
-    setTimeout(function() {
-      t.style.transition = 'opacity 0.3s'; t.style.opacity = '0';
-      setTimeout(function() { t.remove(); }, 300);
-    }, 1800);
   }
 
   // ===== Utility =====

@@ -142,20 +142,6 @@
     showToast('收藏已清空');
   }
 
-  // ===== Toast =====
-  function showToast(msg) {
-    var old = document.getElementById('toast');
-    if (old) old.remove();
-    var t = document.createElement('div');
-    t.id = 'toast'; t.textContent = msg;
-    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(51,51,51,0.92);color:#fff;padding:10px 24px;border-radius:20px;font-size:0.88rem;z-index:9999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
-    document.body.appendChild(t);
-    setTimeout(function() {
-      t.style.transition = 'opacity 0.3s'; t.style.opacity = '0';
-      setTimeout(function() { t.remove(); }, 300);
-    }, 1800);
-  }
-
   // ===== Init =====
   function init() {
     loadWishlist();

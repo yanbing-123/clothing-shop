@@ -15,9 +15,9 @@
 
   // ===== Data Persistence =====
   function loadShowcaseData() {
-    var saved = localStorage.getItem(LS_SHOWCASE);
-    if (saved) {
-      showcaseData = JSON.parse(saved);
+    var saved = safeParse(LS_SHOWCASE, []);
+    if (saved instanceof Array) {
+      showcaseData = saved;
     } else {
       showcaseData = [];
     }
@@ -28,8 +28,8 @@
   }
 
   function loadPoints() {
-    var saved = localStorage.getItem(LS_POINTS);
-    points = saved ? parseInt(saved, 10) : 0;
+    var saved = safeParse(LS_POINTS, 0);
+    points = typeof saved === 'number' ? saved : parseInt(saved, 10) || 0;
   }
 
   function savePoints() {
@@ -119,6 +119,7 @@
   function openUpload() {
     document.getElementById('uploadOverlay').classList.add('show');
     document.getElementById('uploadModal').classList.add('show');
+    setTimeout(function() { document.getElementById('uploadDesc').focus(); }, 100);
   }
 
   function closeUpload() {
@@ -255,22 +256,6 @@
   // ===== Utilities =====
   function escapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-  }
-
-  // ===== Toast =====
-  function showToast(msg) {
-    var old = document.getElementById('toast');
-    if (old) old.remove();
-    var t = document.createElement('div');
-    t.id = 'toast';
-    t.textContent = msg;
-    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(51,51,51,0.92);color:#fff;padding:10px 24px;border-radius:20px;font-size:0.88rem;z-index:9999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);';
-    document.body.appendChild(t);
-    setTimeout(function() {
-      t.style.transition = 'opacity 0.3s';
-      t.style.opacity = '0';
-      setTimeout(function() { t.remove(); }, 300);
-    }, 1800);
   }
 
   // ===== Expose to window._cloth =====

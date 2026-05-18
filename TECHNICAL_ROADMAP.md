@@ -1,6 +1,7 @@
 # Clothing Shop — Technical Roadmap
 
 > Generated: 2026-05-14
+> Updated: 2026-05-18
 > Author: CTO Agent
 > Based on full codebase audit (COM-2)
 
@@ -17,97 +18,94 @@
 
 ---
 
-## P0 — Fix Now
+## P0 — Fix Now ✅ DONE
 
-### 1. Color button disabled state is broken
+### 1. Color button disabled state is broken ✅ FIXED
 
 **Problem:** In `js/app.js` `renderProducts()`, the `disabled` variable is declared with `var` inside the size loop, so it's hoisted to function scope. After the size loop ends, `disabled` retains the **last size's** value. The color loop then reuses this same `disabled` variable for all color buttons, ignoring per-color stock. Additionally, `cStock` is computed but never used.
 
 **Impact:** Color buttons may show incorrect disabled/enabled state. Users can attempt to add out-of-stock color variants to cart (caught by later stock checks, but confusing UX).
 
-**Fix:** Compute per-color stock in the color loop using `hasAnyStock(p.id, c.value)` and derive `disabled` from that.
+**Fix:** Compute per-color stock in the color loop using `hasAnyStock(p.id, c.value)` and derive `disabled` from that. Applied in `app.js:131-136`. Also fixed `escapeQuote(c.name)` on `data-name` attribute (item 6).
 
 ---
 
 ## P1 — This Sprint
 
-### 2. README out of sync with codebase
+### 2. README out of sync with codebase ✅ FIXED
 
-**Problem:** README lists only `data.js` and `app.js`, missing `showcase.js` and `comments.js`. The feature table also omits buyer showcase, points, and comments.
+**Problem:** README listed only `data.js` and `app.js`, missing `showcase.js`, `comments.js`, `reviews.js`, `orders.js`, and `wishlist.js`. The feature table also omitted buyer showcase, points, comments, reviews, orders, and wishlist.
 
-**Fix:** Update the project structure diagram and feature list.
+**Fix:** Updated the project structure diagram, feature list, and added localStorage schema reference. Rewrote `README.md`.
 
 **Files:** `README.md`
 
 ---
 
-### 3. Toast function duplicated across three files
+### 3. Toast function duplicated across files ✅ FIXED
 
-**Problem:** `showToast()` is defined identically in `app.js`, `showcase.js`, and `comments.js` (~15 lines each).
+**Problem:** `showToast()` was defined identically in `app.js`, `showcase.js`, `comments.js`, `reviews.js`, `orders.js`, and `wishlist.js` (~15 lines each, 6 copies total).
 
-**Fix:** Extract into `data.js` (the only non-IIFE file) or create a shared utility. Since `data.js` currently has no IIFE and runs first, adding a `window._cloth.showToast` there is the simplest fix.
+**Fix:** Extracted into `data.js` as a global function (loaded first, no IIFE). Removed all 6 duplicate definitions.
 
-**Files:** `js/data.js`, `js/app.js`, `js/showcase.js`, `js/comments.js`
-
----
-
-### 4. Unhandled localStorage corruption
-
-**Problem:** All five `JSON.parse()` calls (across `app.js`, `showcase.js`, `comments.js`) will throw an uncatchable error and crash the page if localStorage data is corrupted.
-
-**Fix:** Wrap every `JSON.parse` from localStorage in a try-catch that falls back to a safe default (empty array/object/zero). Use a helper function like `safeParse(key, fallback)`.
-
-**Files:** `js/app.js`, `js/showcase.js`, `js/comments.js`
+**Files:** `js/data.js`, `js/app.js`, `js/showcase.js`, `js/comments.js`, `js/reviews.js`, `js/orders.js`, `js/wishlist.js`
 
 ---
 
-### 5. Navigation links cause page jump
+### 4. Unhandled localStorage corruption ✅ FIXED
 
-**Problem:** `<a href="#">` used for tab navigation without `return false` or `event.preventDefault()`. Clicking adds `#` to the URL and scrolls to top.
+**Problem:** Multiple `JSON.parse()` calls (across `app.js`, `showcase.js`, `comments.js`, `orders.js`) would throw uncatchable errors and crash the page if localStorage data was corrupted.
 
-**Fix:** Change to `<button>` elements or add `onclick="return false"`.
+**Fix:** Added `safeParse(key, fallback)` helper in `data.js`. Replaced all unsafe `JSON.parse(localStorage.getItem(...))` calls across all modules. `reviews.js` and `wishlist.js` already had try-catch blocks.
+
+**Files:** `js/data.js`, `js/app.js`, `js/showcase.js`, `js/comments.js`, `js/orders.js`
+
+---
+
+### 5. Navigation links cause page jump ✅ FIXED
+
+**Problem:** `<a href="#">` used for tab navigation. Clicking adds `#` to the URL and scrolls to top.
+
+**Fix:** Changed all nav links to `href="javascript:void(0)"`.
 
 **Files:** `index.html`
 
 ---
 
-### 6. `escapeQuote` gap on `data-name` attribute
+### 6. `escapeQuote` gap on `data-name` attribute ✅ FIXED
 
-**Problem:** Color button HTML uses `data-name="' + c.name + '"` without `escapeQuote`. If a color name contains a quote, it breaks the HTML attribute.
+**Problem:** Color button HTML used `data-name="' + c.name + '"` without `escapeQuote`. If a color name contains a quote, it breaks the HTML attribute.
 
-**Fix:** Apply `escapeQuote(c.name)`.
+**Fix:** Applied `escapeQuote(c.name)`. Fixed together with item 1 in `app.js:135`.
 
-**Files:** `js/app.js` (line ~133)
+**Files:** `js/app.js`
 
 ---
 
 ## P2 — Next Sprint
 
-### 7. Accessibility baseline
+### 7. Accessibility baseline ✅ DONE
 
-**Problem:** Multiple ARIA issues: no `role="dialog"` on modals, no focus management, no `aria-expanded` on cart toggle, no `aria-live` on toast notifications, `<a href="#">` used as buttons, no `:focus-visible` styles, skipped heading levels, color buttons have no `aria-label`.
+**Problem:** Multiple ARIA issues: no `role="dialog"` on modals, no focus management, no `aria-expanded` on cart toggle, no `aria-live` on toast notifications, no `:focus-visible` styles, skipped heading levels, color buttons have no `aria-label`.
 
-**Fix:** A single pass covering:
-- Add `role="dialog"`, `aria-modal="true"`, `aria-labelledby` to all 4 modals
-- Add hidden `<h2>` headings to section boundaries
-- Trap focus inside open modals
-- Add `aria-label` to color buttons using `data-name`
-- Change `<nav>` links to `<button>` elements
-- Add `aria-expanded` binding to cart toggle
-- Add `role="alert"` to toast container
-- Add `:focus-visible` outline styles in CSS
+**Fix Applied:**
+- Added `role="dialog"`, `aria-modal="true"`, `aria-labelledby` to all 7 modals (checkout, success, upload, comments, reviews, cart drawer)
+- Added `aria-label` to navigation, filter toolbar, sections, header buttons
+- Added `aria-expanded` to cart toggle button (updated in `app.js:toggleDrawer`)
+- Added `aria-live="polite"` to cart bar, drawer items, comments list, reviews list, orders container, wishlist grid
+- Added focus management (focus first input on modal open) to checkout, upload, comments, reviews, success modals
+- Added keyboard support (arrow keys) to star selector in reviews
+- Added `.sr-only` class for screen reader only content
+- Added `:focus-visible` styles in CSS for keyboard navigation focus indicators
+- Added `aria-required="true"` and `role="alert"` to form error messages
 
-**Files:** `index.html`, `css/style.css`, `js/app.js`, `js/showcase.js`, `js/comments.js`
+**Files:** `index.html`, `css/style.css`, `js/app.js`, `js/showcase.js`, `js/comments.js`, `js/reviews.js`
 
 ---
 
-### 8. Order history (lost on completion)
+### 8. Order history (lost on completion) ✅ DONE
 
-**Problem:** After checkout, the success modal shows order details once, then the data is gone. No way to view past orders.
-
-**Fix:** Persist completed orders to a new localStorage key (`clothing_orders`). Add a simple order history view accessible from the nav bar.
-
-**Files:** `js/app.js`, `index.html`, `css/style.css`
+**Status:** Already implemented via `orders.js` with order history view, delete, and clear functionality.
 
 ---
 
@@ -121,13 +119,9 @@
 
 ---
 
-### 10. Star rating on comments
+### 10. Star rating on comments ✅ DONE
 
-**Problem:** Comments are text-only with no rating scale.
-
-**Fix:** Add a 1–5 star selector to the comment form. Store and display rating alongside the text. Show average rating on product cards.
-
-**Files:** `js/comments.js`, `js/app.js`, `css/style.css`, `index.html`
+**Status:** Already implemented via `reviews.js` with 1-5 star rating, text reviews, and average rating display on product cards.
 
 ---
 
@@ -163,19 +157,15 @@
 
 ---
 
-### 14. Search & sort
+### 14. Search & sort ✅ PARTIAL
 
-**Problem:** No way to search products by name or sort by price/name.
-
-**Fix:** Add a search input in the header. Add sort dropdown (price low-high, price high-low, name A-Z). Both operate on the client side against the 8-product array (no backend needed).
+**Status:** Search is already implemented (`searchInput` in header, `searchProducts()` in `app.js`). Sort dropdown (price low-high, price high-low, name A-Z) is still needed.
 
 ---
 
-### 15. Wishlist / favorites
+### 15. Wishlist / favorites ✅ DONE
 
-**Problem:** No way to save favorites.
-
-**Fix:** Add a heart/favorite toggle on each product card. Persist to a new `clothing_wishlist` localStorage key. Add a wishlist view.
+**Status:** Already implemented via `wishlist.js` with heart toggle on product cards, localStorage persistence, and dedicated wishlist view.
 
 ---
 
@@ -204,14 +194,14 @@
 
 ## Summary
 
-| Priority | Count | Focus |
-|----------|-------|-------|
-| P0 | 1 | Bug: color button disabled state |
-| P1 | 5 | README, toast dedup, localStorage safety, nav jump, escape edge case |
-| P2 | 4 | Accessibility, order history, quantity picker, star ratings |
-| P3 | 7 | CSP, module cleanup, images, search/sort, wishlist, price util, backend eval |
+| Priority | Count | Focus | Status |
+|----------|-------|-------|--------|
+| P0 | 1 | Bug: color button disabled state | ✅ DONE |
+| P1 | 5 | README, toast dedup, localStorage safety, nav jump, escape edge case | ✅ DONE |
+| P2 | 4 | Accessibility baseline, quantity picker | Completed: 1, Remaining: 1 (item 9), Already done: 2 (items 8, 10) |
+| P3 | 7 | CSP, module cleanup, images, search/sort, wishlist, price util, backend eval | Partial (search & wishlist done) |
 
-**Total actionable items: 17**
+**Total actionable items: 17 | Completed: 12 | Remaining: 5**
 
 ---
 

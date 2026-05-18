@@ -12,18 +12,19 @@
   <header class="site-header">
     <div class="container header-inner">
       <h1 class="logo">CLOTHING <span>STORE</span></h1>
-      <nav class="site-nav">
-        <a href="#" class="nav-link active" data-view="shop" onclick="window._cloth.switchView('shop')">商品</a>
-        <a href="#" class="nav-link" data-view="showcase" onclick="window._cloth.switchView('showcase')">买家秀</a>
-        <a href="#" class="nav-link" data-view="orders" onclick="window._cloth.switchView('orders')">订单</a>
-        <a href="#" class="nav-link" data-view="wishlist" onclick="window._cloth.switchView('wishlist')">收藏</a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="javascript:void(0)" class="nav-link active" data-view="shop" onclick="window._cloth.switchView('shop')" role="tab" aria-selected="true">商品</a>
+        <a href="javascript:void(0)" class="nav-link" data-view="showcase" onclick="window._cloth.switchView('showcase')" role="tab" aria-selected="false">买家秀</a>
+        <a href="javascript:void(0)" class="nav-link" data-view="orders" onclick="window._cloth.switchView('orders')" role="tab" aria-selected="false">订单</a>
+        <a href="javascript:void(0)" class="nav-link" data-view="wishlist" onclick="window._cloth.switchView('wishlist')" role="tab" aria-selected="false">收藏</a>
       </nav>
+      <div class="auth-header" id="authContainer"></div>
       <div class="header-actions">
-        <span class="points-badge" id="pointsBadge">⭐ <strong id="pointsCount">0</strong> 积分</span>
-        <span class="wishlist-header-btn" id="wishlistHeaderBtn" onclick="window._cloth.switchView('wishlist')">
+        <span class="points-badge" id="pointsBadge" aria-label="积分">⭐ <strong id="pointsCount">0</strong> 积分</span>
+        <span class="wishlist-header-btn" id="wishlistHeaderBtn" onclick="window._cloth.switchView('wishlist')" role="button" tabindex="0" aria-label="我的收藏">
           ♥ <span class="wishlist-badge" id="wishlistBadge">0</span>
         </span>
-        <button class="cart-btn" onclick="window._cloth.toggleDrawer()">
+        <button class="cart-btn" onclick="window._cloth.toggleDrawer()" aria-label="购物车" aria-expanded="false" id="cartToggleBtn">
           🛒
           <span class="cart-badge" id="cartBadge">0</span>
         </button>
@@ -32,14 +33,15 @@
   </header>
 
   <!-- Filter Bar -->
-  <div class="filter-bar">
+  <div class="filter-bar" role="toolbar" aria-label="商品筛选">
     <div class="container filter-inner">
-      <button class="filter-btn active" data-cat="全部" onclick="window._cloth.filterBy('cat','全部')">全部</button>
-      <button class="filter-btn" data-cat="男装" onclick="window._cloth.filterBy('cat','男装')">男装</button>
-      <button class="filter-btn" data-cat="女装" onclick="window._cloth.filterBy('cat','女装')">女装</button>
-      <button class="filter-btn" data-cat="童装" onclick="window._cloth.filterBy('cat','童装')">童装</button>
+      <button class="filter-btn active" data-cat="全部" onclick="window._cloth.filterBy('cat','全部')" aria-pressed="true">全部</button>
+      <button class="filter-btn" data-cat="男装" onclick="window._cloth.filterBy('cat','男装')" aria-pressed="false">男装</button>
+      <button class="filter-btn" data-cat="女装" onclick="window._cloth.filterBy('cat','女装')" aria-pressed="false">女装</button>
+      <button class="filter-btn" data-cat="童装" onclick="window._cloth.filterBy('cat','童装')" aria-pressed="false">童装</button>
       <div class="search-wrap">
-        <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索商品..." oninput="window._cloth.searchProducts(this.value)">
+        <label for="searchInput" class="sr-only">搜索商品</label>
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索商品..." oninput="window._cloth.searchProducts(this.value)" aria-label="搜索商品">
       </div>
     </div>
   </div>
@@ -50,7 +52,7 @@
   </main>
 
   <!-- Bottom Cart Bar -->
-  <div class="cart-bar" id="cartBar">
+  <div class="cart-bar" id="cartBar" aria-live="polite">
     <div class="container cart-bar-inner">
       <span class="cart-tip">已选 <strong id="cartCountBar">0</strong> 件</span>
       <span class="cart-total-label">合计：<strong id="cartTotalBar">¥0.00</strong></span>
@@ -62,12 +64,12 @@
   <div class="drawer-overlay" id="drawerOverlay" onclick="window._cloth.toggleDrawer()"></div>
 
   <!-- Cart Drawer -->
-  <aside class="cart-drawer" id="cartDrawer">
+  <aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle">
     <div class="drawer-header">
-      <h3>🛒 购物车</h3>
-      <button class="drawer-close" onclick="window._cloth.toggleDrawer()">✕</button>
+      <h3 id="cartDrawerTitle">🛒 购物车</h3>
+      <button class="drawer-close" onclick="window._cloth.toggleDrawer()" aria-label="关闭购物车">✕</button>
     </div>
-    <div class="drawer-items" id="drawerItems"></div>
+    <div class="drawer-items" id="drawerItems" aria-live="polite"></div>
     <div class="drawer-footer">
       <div class="drawer-total">
         <span>总计：</span>
@@ -82,26 +84,26 @@
 
   <!-- Checkout Modal -->
   <div class="modal-overlay" id="modalOverlay" onclick="window._cloth.closeCheckout()"></div>
-  <div class="modal checkout-modal" id="checkoutModal">
+  <div class="modal checkout-modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
     <div class="modal-header">
-      <h3>📋 填写订单信息</h3>
-      <button class="modal-close" onclick="window._cloth.closeCheckout()">✕</button>
+      <h3 id="checkoutTitle">📋 填写订单信息</h3>
+      <button class="modal-close" onclick="window._cloth.closeCheckout()" aria-label="关闭订单表单">✕</button>
     </div>
     <form class="checkout-form" id="checkoutForm" onsubmit="window._cloth.submitOrder(event)">
       <div class="form-group">
         <label for="fName">姓名 <span class="required">*</span></label>
-        <input type="text" id="fName" placeholder="请输入收货人姓名" maxlength="20">
-        <span class="error-msg" id="errName"></span>
+        <input type="text" id="fName" placeholder="请输入收货人姓名" maxlength="20" required aria-required="true">
+        <span class="error-msg" id="errName" role="alert"></span>
       </div>
       <div class="form-group">
         <label for="fPhone">手机号 <span class="required">*</span></label>
-        <input type="tel" id="fPhone" placeholder="请输入11位手机号" maxlength="11">
-        <span class="error-msg" id="errPhone"></span>
+        <input type="tel" id="fPhone" placeholder="请输入11位手机号" maxlength="11" required aria-required="true">
+        <span class="error-msg" id="errPhone" role="alert"></span>
       </div>
       <div class="form-group">
         <label for="fAddress">收货地址 <span class="required">*</span></label>
-        <textarea id="fAddress" placeholder="请输入详细收货地址" rows="2" maxlength="100"></textarea>
-        <span class="error-msg" id="errAddress"></span>
+        <textarea id="fAddress" placeholder="请输入详细收货地址" rows="2" maxlength="100" required aria-required="true"></textarea>
+        <span class="error-msg" id="errAddress" role="alert"></span>
       </div>
       <div class="form-summary">
         共 <strong id="summaryCount">0</strong> 件，合计 <strong id="summaryTotal">¥0.00</strong>
@@ -112,9 +114,9 @@
 
   <!-- Success Modal -->
   <div class="modal-overlay" id="successOverlay"></div>
-  <div class="modal success-modal" id="successModal">
+  <div class="modal success-modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
     <div class="success-icon">🎉</div>
-    <h3>下单成功！</h3>
+    <h3 id="successTitle">下单成功！</h3>
     <p class="order-num" id="orderNum"></p>
     <div class="order-items" id="orderItems"></div>
     <p class="success-note">感谢您的惠顾，商品将尽快送达！</p>
@@ -122,7 +124,7 @@
   </div>
 
   <!-- Showcase Section -->
-  <section class="showcase-section" id="showcaseSection" style="display:none;">
+  <section class="showcase-section" id="showcaseSection" style="display:none;" aria-label="买家秀">
     <div class="container">
       <div class="showcase-header">
         <h2>👗 真实买家秀</h2>
@@ -142,13 +144,13 @@
 
   <!-- Upload Modal -->
   <div class="modal-overlay" id="uploadOverlay" onclick="window._cloth.closeUpload()"></div>
-  <div class="modal upload-modal" id="uploadModal">
+  <div class="modal upload-modal" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="uploadTitle">
     <div class="modal-header">
-      <h3>📸 上传穿搭照</h3>
-      <button class="modal-close" onclick="window._cloth.closeUpload()">✕</button>
+      <h3 id="uploadTitle">📸 上传穿搭照</h3>
+      <button class="modal-close" onclick="window._cloth.closeUpload()" aria-label="关闭上传">✕</button>
     </div>
     <form class="upload-form" id="uploadForm" onsubmit="window._cloth.submitUpload(event)">
-      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()" role="button" tabindex="0" aria-label="点击选择照片">
         <div class="upload-placeholder" id="uploadPlaceholder">
           <span class="upload-icon">📷</span>
           <p>点击选择照片</p>
@@ -159,8 +161,8 @@
       </div>
       <div class="form-group">
         <label for="uploadDesc">穿搭描述 <span class="required">*</span></label>
-        <textarea id="uploadDesc" placeholder="描述你的穿搭，如：这套搭配来自本店新款，非常适合通勤~" rows="3" maxlength="200"></textarea>
-        <span class="error-msg" id="errUpload"></span>
+        <textarea id="uploadDesc" placeholder="描述你的穿搭，如：这套搭配来自本店新款，非常适合通勤~" rows="3" maxlength="200" required aria-required="true"></textarea>
+        <span class="error-msg" id="errUpload" role="alert"></span>
       </div>
       <div class="upload-reward">
         <span>上传成功可获得 ⭐ <strong>10</strong> 积分奖励</span>
@@ -171,34 +173,72 @@
 
   <!-- Comment Modal -->
   <div class="modal-overlay" id="commentsOverlay" onclick="window._cloth.closeComments()"></div>
-  <div class="modal comment-modal" id="commentsModal">
+  <div class="modal comment-modal" id="commentsModal" role="dialog" aria-modal="true" aria-labelledby="commentsModalTitle">
     <div class="modal-header">
       <h3 id="commentsModalTitle">用户评论</h3>
-      <button class="modal-close" onclick="window._cloth.closeComments()">✕</button>
+      <button class="modal-close" onclick="window._cloth.closeComments()" aria-label="关闭评论">✕</button>
     </div>
-    <div class="comments-list" id="commentsList">
+    <div class="comments-list" id="commentsList" aria-live="polite">
       <div class="comments-empty">还没有评论，快来发表第一条评论吧~</div>
     </div>
     <form class="comment-form" id="commentsForm" onsubmit="window._cloth.submitComment(event)">
       <div class="comment-form-row">
-        <input type="text" id="commentNickname" class="comment-input" placeholder="你的昵称" maxlength="20">
+        <label for="commentNickname" class="sr-only">你的昵称</label>
+        <input type="text" id="commentNickname" class="comment-input" placeholder="你的昵称" maxlength="20" required aria-required="true">
       </div>
       <div class="comment-form-row">
-        <textarea id="commentContent" class="comment-textarea" placeholder="说说你的看法..." rows="2" maxlength="200"></textarea>
+        <label for="commentContent" class="sr-only">评论内容</label>
+        <textarea id="commentContent" class="comment-textarea" placeholder="说说你的看法..." rows="2" maxlength="200" required aria-required="true"></textarea>
       </div>
-      <span class="error-msg" id="errComment"></span>
+      <span class="error-msg" id="errComment" role="alert"></span>
       <button type="submit" class="btn-comment-submit">发表评论</button>
     </form>
   </div>
 
+  <!-- Review Modal -->
+  <div class="modal-overlay" id="reviewsOverlay" onclick="window._cloth.closeReviews()"></div>
+  <div class="modal review-modal" id="reviewsModal" role="dialog" aria-modal="true" aria-labelledby="reviewsModalTitle">
+    <div class="modal-header">
+      <h3 id="reviewsModalTitle">商品评价</h3>
+      <button class="modal-close" onclick="window._cloth.closeReviews()" aria-label="关闭评价">✕</button>
+    </div>
+    <div class="review-list" id="reviewsList" aria-live="polite">
+      <div class="review-empty">还没有评价，快来发表第一条评价吧~</div>
+    </div>
+    <form class="review-form" id="reviewsForm" onsubmit="window._cloth.submitReview(event)">
+      <div class="review-form-row">
+        <label for="reviewNickname" class="sr-only">你的昵称</label>
+        <input type="text" id="reviewNickname" class="review-input" placeholder="你的昵称" maxlength="20" required aria-required="true">
+      </div>
+      <div class="review-form-row">
+        <span class="rating-label" id="ratingLabel">评分</span>
+        <div class="star-selector" id="starSelector" role="radiogroup" aria-labelledby="ratingLabel">
+          <span class="star" role="radio" aria-checked="false" aria-label="1星" tabindex="0">★</span>
+          <span class="star" role="radio" aria-checked="false" aria-label="2星" tabindex="-1">★</span>
+          <span class="star" role="radio" aria-checked="false" aria-label="3星" tabindex="-1">★</span>
+          <span class="star" role="radio" aria-checked="false" aria-label="4星" tabindex="-1">★</span>
+          <span class="star" role="radio" aria-checked="false" aria-label="5星" tabindex="-1">★</span>
+        </div>
+        <span class="rating-hint" id="ratingHint">请点击星星评分</span>
+        <input type="hidden" id="ratingValue" value="0">
+      </div>
+      <div class="review-form-row">
+        <label for="reviewContent" class="sr-only">评价内容</label>
+        <textarea id="reviewContent" class="review-textarea" placeholder="说说你的使用感受（选填）..." rows="2" maxlength="200"></textarea>
+      </div>
+      <span class="error-msg" id="errReview" role="alert"></span>
+      <button type="submit" class="btn-review-submit">发表评价</button>
+    </form>
+  </div>
+
   <!-- Orders Section -->
-  <section class="orders-section" id="ordersSection" style="display:none;">
+  <section class="orders-section" id="ordersSection" style="display:none;" aria-label="我的订单">
     <div class="container">
       <div class="orders-header">
         <h2>📦 我的订单</h2>
         <button class="btn-clear-orders" onclick="window._cloth.clearOrders()">清空记录</button>
       </div>
-      <div class="orders-container" id="ordersContainer"></div>
+      <div class="orders-container" id="ordersContainer" aria-live="polite"></div>
       <div class="orders-empty" id="ordersEmpty">
         <div class="orders-empty-icon">📦</div>
         <p>还没有订单，快去选购商品吧！</p>
@@ -208,12 +248,12 @@
   </section>
 
   <!-- Wishlist Section -->
-  <section class="wishlist-section" id="wishlistSection" style="display:none;">
+  <section class="wishlist-section" id="wishlistSection" style="display:none;" aria-label="我的收藏">
     <div class="container">
       <div class="wishlist-header">
         <h2>♥ 我的收藏</h2>
       </div>
-      <div class="wishlist-grid" id="wishlistGrid"></div>
+      <div class="wishlist-grid" id="wishlistGrid" aria-live="polite"></div>
       <div class="wishlist-empty" id="wishlistEmpty">
         <div class="wishlist-empty-icon">♥</div>
         <p>还没有收藏商品，快去挑选喜欢的服装吧！</p>
@@ -222,10 +262,73 @@
     </div>
   </section>
 
+  <!-- ===== Login Modal ===== -->
+  <div class="modal-overlay" id="loginOverlay" onclick="window._cloth.closeLogin()"></div>
+  <div class="modal auth-modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+    <div class="modal-header">
+      <h3 id="loginModalTitle">🔑 登录</h3>
+      <button class="modal-close" onclick="window._cloth.closeLogin()" aria-label="关闭登录">✕</button>
+    </div>
+    <form class="auth-form" id="loginForm" onsubmit="window._cloth.submitLogin(event)">
+      <div class="form-group">
+        <label for="loginUsername">用户名 <span class="required">*</span></label>
+        <input type="text" id="loginUsername" placeholder="请输入用户名" maxlength="20" required aria-required="true">
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">密码 <span class="required">*</span></label>
+        <input type="password" id="loginPassword" placeholder="请输入密码" maxlength="30" required aria-required="true">
+      </div>
+      <button type="submit" class="btn-submit">登录</button>
+      <p class="auth-switch">
+        还没有账号？<a href="javascript:void(0)" onclick="window._cloth.closeLogin();window._cloth.openRegister()">立即注册</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- ===== Register Modal ===== -->
+  <div class="modal-overlay" id="registerOverlay" onclick="window._cloth.closeRegister()"></div>
+  <div class="modal auth-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle">
+    <div class="modal-header">
+      <h3 id="registerModalTitle">📝 注册</h3>
+      <button class="modal-close" onclick="window._cloth.closeRegister()" aria-label="关闭注册">✕</button>
+    </div>
+    <form class="auth-form" id="registerForm" onsubmit="window._cloth.submitRegister(event)">
+      <div class="form-group">
+        <label for="regUsername">用户名 <span class="required">*</span></label>
+        <input type="text" id="regUsername" placeholder="请输入用户名（至少2个字符）" maxlength="20" required aria-required="true">
+      </div>
+      <div class="form-group">
+        <label for="regPassword">密码 <span class="required">*</span></label>
+        <input type="password" id="regPassword" placeholder="请输入密码（至少6个字符）" maxlength="30" required aria-required="true">
+      </div>
+      <div class="form-group">
+        <label for="regConfirmPassword">确认密码 <span class="required">*</span></label>
+        <input type="password" id="regConfirmPassword" placeholder="请再次输入密码" maxlength="30" required aria-required="true">
+      </div>
+      <div class="form-group">
+        <label for="regPhone">手机号</label>
+        <input type="tel" id="regPhone" placeholder="选填，用于快速下单" maxlength="11">
+      </div>
+      <div class="form-group">
+        <label for="regAddress">收货地址</label>
+        <textarea id="regAddress" placeholder="选填，用于快速下单" rows="2" maxlength="100"></textarea>
+      </div>
+      <button type="submit" class="btn-submit">注册</button>
+      <p class="auth-switch">
+        已有账号？<a href="javascript:void(0)" onclick="window._cloth.closeRegister();window._cloth.openLogin()">立即登录</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- Toast Container (for screen readers) -->
+  <div id="toastContainer" role="alert" aria-live="assertive" class="sr-only"></div>
+
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/showcase.js"></script>
   <script src="js/comments.js"></script>
+  <script src="js/reviews.js"></script>
   <script src="js/orders.js"></script>
   <script src="js/wishlist.js"></script>
 </body>
